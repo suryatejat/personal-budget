@@ -123,17 +123,7 @@
             datasets:[
                 {
                     data: [],
-                    backgroundColor: [
-                        '#ffcd56',
-                        '#ff6384',
-                        '#36a2eb',
-                        '#fd6b19',
-                        '#CC0000',
-                        '#45818e',
-                        '#c90076',
-                        '#783f04',
-                        '#f6b26b'
-                    ],
+                    backgroundColor: [],
                 }
             ],
             myBudget: []
@@ -169,7 +159,7 @@
 
             // set the color scale
             var color = d3.scaleOrdinal()
-            .range(d3.schemeDark2);
+            .range(dataSource.datasets[0].backgroundColor);
 
             // Compute the position of each group on the pie:
             var pie = d3.pie()
@@ -237,16 +227,14 @@
         }
 
         function getBudget(){
-            axios.get('http://localhost:3000/budget')
+            axios.get('http://localhost:3000/expenses')
             .then(function (res) {
-                // console.log(res.data);
-                for(var i = 0; i < res.data.myBudget.length; i++){
-                    dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
-                    dataSource.labels[i] = res.data.myBudget[i].title;
-                    dataSource.myBudget.push({
-                        "title": res.data.myBudget[i].title,
-                        "budget": res.data.myBudget[i].budget
-                    })
+                console.log(res.data);
+                for(var i = 0; i < res.data.length; i++){
+                    dataSource.datasets[0].data[i] = res.data[i].budget;
+                    dataSource.labels[i] = res.data[i].title;
+                    dataSource.datasets[0].backgroundColor[i] = res.data[i].color;
+                    dataSource.myBudget.push(res.data[i]);
                 }
                 createChart();
                 populateD3jsChart();
